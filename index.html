@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text Game — Level 1 Beginner | Cognifyz</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────────────────── -->
+<header>
+  <a class="logo" href="#">🎮 COGNIFYZ GAME</a>
+  <span class="badge">LEVEL 1 · BEGINNER</span>
+</header>
+
+<!-- ── Main ───────────────────────────────────────────────── -->
+<main>
+
+  <!-- Hero -->
+  <section class="hero">
+    <p class="hero-label">Task 1 · Text-Based Game</p>
+    <h1>DEVELOP A BASIC<br>TEXT-BASED GAME</h1>
+    <p>Implement a simple game using conditional statements for game logic.
+       Choose a game type, define its rules, manage flow with conditionals,
+       then test and debug for correctness.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="#game-section" class="btn btn-primary">▶ Play in Browser</a>
+      <a href="game.py" download class="btn btn-secondary">⬇ Download Python</a>
+    </div>
+  </section>
+
+  <!-- Game types -->
+  <section>
+    <p class="section-title">Step 1 — Choose a Game Type</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🔢</div>
+        <h3>Number Guessing</h3>
+        <p>Player guesses a secret number with higher/lower hints. Three difficulty levels with scoring.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📚</div>
+        <h3>Knowledge Quiz</h3>
+        <p>Multiple-choice general knowledge questions. Points awarded for each correct answer.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏆</div>
+        <h3>Score System</h3>
+        <p>Both games contribute to a running total score. Harder levels reward more points.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Steps -->
+  <section class="steps">
+    <p class="section-title">Steps Implemented</p>
+
+    <div class="step">
+      <span class="step-num">01</span>
+      <div class="step-body">
+        <h4>Choose a game type</h4>
+        <p>Two distinct game modes: a number-guessing game with three difficulty levels (Easy / Medium / Hard) and a multiple-choice general knowledge quiz.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <span class="step-num">02</span>
+      <div class="step-body">
+        <h4>Define game rules and logic</h4>
+        <p>Guessing game: pick a random secret, award points based on fewest attempts. Quiz: 5 curated questions with A–D choices and instant feedback.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <span class="step-num">03</span>
+      <div class="step-body">
+        <h4>Conditional statements to manage game flow</h4>
+        <p>Every branch uses <code>if / elif / else</code> — menu routing, difficulty selection, guess comparison (too low / too high / correct), quiz answer checking, and replay prompts.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <span class="step-num">04</span>
+      <div class="step-body">
+        <h4>Test and debug for correctness</h4>
+        <p>Input validation loops reject non-numeric entries and out-of-range values. Edge cases (boundary numbers, empty input) are all handled gracefully.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Code snippet -->
+  <section>
+    <p class="section-title">Core Conditional Logic</p>
+    <div class="code-block">
+      <span class="code-label">game.py · excerpt</span>
+      <pre>
+# Step 3 — conditional statements managing game flow
+
+if guess &lt; secret:
+    print("  📈  Too low!  Try higher.")
+
+elif guess &gt; secret:
+    print("  📉  Too high! Try lower.")
+
+else:                             # guess == secret
+    print(f"🎉  Correct in {attempts_used} attempt(s)!")
+    return True, attempts_used
+      </pre>
+    </div>
+  </section>
+
+  <!-- Live browser game -->
+  <section id="game-section">
+    <p class="section-title">Play — Number Guessing (Browser Demo)</p>
+
+    <div id="score-display">
+      <span class="score-pill" id="pill-attempts">Attempts: —</span>
+      <span class="score-pill" id="pill-score">Score: 0</span>
+      <span class="score-pill" id="pill-diff">Difficulty: —</span>
+    </div>
+
+    <div class="game-terminal">
+      <div class="terminal-bar">
+        <span class="dot red"></span>
+        <span class="dot amber"></span>
+        <span class="dot green"></span>
+      </div>
+
+      <div class="terminal-output" id="output"></div>
+
+      <div class="terminal-input-row">
+        <span class="prompt-sym">$</span>
+        <input id="game-input" type="text" placeholder="type here…" autocomplete="off" />
+        <button id="game-submit">ENTER</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Footer ─────────────────────────────────────────────── -->
+<footer>
+  <p>Built for <span>Cognifyz Technologies</span> · Level 1 Beginner Task 1</p>
+  <p style="margin-top:6px;">Python source: <span>game.py</span> &nbsp;|&nbsp; Styles: <span>style.css</span></p>
+</footer>
+
+<!-- ── Game Script ─────────────────────────────────────────── -->
+<script>
+/* ──────────────────────────────────────────────────────────
+   Browser-side text game — mirrors game.py logic exactly.
+   All game flow is managed via conditional statements.
+   ────────────────────────────────────────────────────────── */
+
+const output    = document.getElementById('output');
+const input     = document.getElementById('game-input');
+const submitBtn = document.getElementById('game-submit');
+const pillAtt   = document.getElementById('pill-attempts');
+const pillScore = document.getElementById('pill-score');
+const pillDiff  = document.getElementById('pill-diff');
+
+// ── Game state ─────────────────────────────────────────────
+const state = {
+  phase: 'menu',          // menu | difficulty | guessing | end
+  secret: 0,
+  upperBound: 0,
+  maxAttempts: 0,
+  attemptsUsed: 0,
+  diffLevel: 0,
+  totalScore: 0,
+};
+
+// ── Print helpers ──────────────────────────────────────────
+function print(text, cls = '') {
+  const span = document.createElement('span');
+  span.className = 'line' + (cls ? ' ' + cls : '');
+  span.textContent = text;
+  output.appendChild(span);
+  output.scrollTop = output.scrollHeight;
+}
+
+function printBlank() { print(''); }
+
+// ── Score pills ────────────────────────────────────────────
+function updatePills() {
+  const rem = state.maxAttempts - state.attemptsUsed;
+  pillAtt.textContent   = state.phase === 'guessing'
+    ? `Attempts left: ${rem}` : 'Attempts: —';
+  pillScore.textContent = `Score: ${state.totalScore}`;
+  pillDiff.textContent  = state.diffLevel
+    ? `Difficulty: ${['','Easy','Medium','Hard'][state.diffLevel]}` : 'Difficulty: —';
+}
+
+// ── Show main menu ─────────────────────────────────────────
+function showMenu() {
+  state.phase = 'menu';
+  printBlank();
+  print('════════════════════════════════');
+  print('   🎮  NUMBER GUESSING GAME  🎮');
+  print('   Cognifyz Technologies');
+  print('════════════════════════════════');
+  printBlank();
+  print('Choose an option:');
+  print('  1  →  Start Game (Easy   1-50,  10 attempts)');
+  print('  2  →  Start Game (Medium 1-100,  7 attempts)');
+  print('  3  →  Start Game (Hard   1-200,  5 attempts)');
+  printBlank();
+  updatePills();
+}
+
+// ── Start a round ─────────────────────────────────────────
+function startRound(level) {
+  const configs = { 1:[50,10], 2:[100,7], 3:[200,5] };
+  const [ub, ma] = configs[level];
+
+  state.phase        = 'guessing';
+  state.diffLevel    = level;
+  state.upperBound   = ub;
+  state.maxAttempts  = ma;
+  state.attemptsUsed = 0;
+  state.secret       = Math.floor(Math.random() * ub) + 1;
+
+  printBlank();
+  print(`🔢  Secret number: 1 – ${ub}.  You have ${ma} attempts.`);
+  printBlank();
+  print(`Remaining: ${ma}  →  enter your guess:`);
+  updatePills();
+}
+
+// ── Handle a guess — all game logic via conditionals ───────
+function handleGuess(raw) {
+  const num = parseInt(raw, 10);
+
+  // Validate
+  if (isNaN(num) || num < 1 || num > state.upperBound) {
+    print(`❌  Enter a number between 1 and ${state.upperBound}.`, 'error');
+    return;
+  }
+
+  state.attemptsUsed++;
+  const remaining = state.maxAttempts - state.attemptsUsed;
+
+  // ── Core conditional statements ──
+  if (num < state.secret) {
+    print(`  > ${num}  →  📈  Too low! Try higher.`, 'warn');
+  } else if (num > state.secret) {
+    print(`  > ${num}  →  📉  Too high! Try lower.`, 'warn');
+  } else {
+    // Correct guess
+    const baseScores = [0, 100, 200, 300];
+    const bonus = remaining * 10;
+    const round = baseScores[state.diffLevel] + bonus;
+    state.totalScore += round;
+
+    printBlank();
+    print(`🎉  Correct! The number was ${state.secret}.`, 'win');
+    print(`    Solved in ${state.attemptsUsed} attempt(s).  +${round} pts`, 'win');
+    printBlank();
+    state.phase = 'end';
+    print('Press 1 / 2 / 3 to play again or type "quit" to exit.');
+    state.phase = 'menu';   // re-route to menu for next input
+    updatePills();
+    return;
+  }
+
+  // Ran out of attempts
+  if (remaining <= 0) {
+    printBlank();
+    print(`😞  Out of attempts! The answer was ${state.secret}.`, 'error');
+    printBlank();
+    state.phase = 'menu';
+    print('Press 1 / 2 / 3 to try again or type "quit" to exit.');
+  } else {
+    print(`    Attempts remaining: ${remaining}`);
+  }
+
+  updatePills();
+}
+
+// ── Main input handler ─────────────────────────────────────
+function handleInput() {
+  const val = input.value.trim();
+  input.value = '';
+  if (!val) return;
+
+  print('$ ' + val, 'dim');   // echo
+
+  if (val.toLowerCase() === 'quit') {
+    printBlank();
+    print(`👋  Thanks for playing! Final score: ${state.totalScore}`, 'win');
+    state.phase = 'done';
+    input.disabled = true;
+    submitBtn.disabled = true;
+    updatePills();
+    return;
+  }
+
+  // Conditional routing by phase
+  if (state.phase === 'menu') {
+    if (val === '1') { startRound(1); }
+    else if (val === '2') { startRound(2); }
+    else if (val === '3') { startRound(3); }
+    else { print('❌  Enter 1, 2, 3 or "quit".', 'error'); }
+  } else if (state.phase === 'guessing') {
+    handleGuess(val);
+  }
+}
+
+// ── Wire up events ─────────────────────────────────────────
+submitBtn.addEventListener('click', handleInput);
+input.addEventListener('keydown', e => { if (e.key === 'Enter') handleInput(); });
+
+// ── Boot ───────────────────────────────────────────────────
+showMenu();
+input.focus();
+</script>
+</body>
+</html>
